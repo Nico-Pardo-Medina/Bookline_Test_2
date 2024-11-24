@@ -1,27 +1,9 @@
 import logging
-import re
-from fastapi import APIRouter,HTTPException,Depends
-from pydantic import BaseModel,validator
+from fastapi import APIRouter,Depends
 from services.services import list_available_cars
+from models.models import DateQuery
 
 router = APIRouter()
-
-class Car(BaseModel):
-    id: int
-    model: str
-    bookings: list[str]
-
-class DateQuery(BaseModel):
-    date: str
-
-    @validator("date")
-    def validate_date(cls, date: str) -> str:
-        DATE_REGEX = r"^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$"
-        if not re.match(DATE_REGEX, date):
-            logging.error(f"Invalid date format: {date}. Expected format: YYYY-MM-DD.")
-            raise HTTPException(status_code=400, detail=f"Invalid date format: {date}. Expected format: YYYY-MM-DD.")
-        return date
-
 
 @router.get("/cars", response_model=list[int])
 def get_available_cars(query: DateQuery = Depends()):

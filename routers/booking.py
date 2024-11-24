@@ -1,21 +1,9 @@
 import logging
-import re
 from fastapi import APIRouter,HTTPException
-from pydantic import BaseModel,validator
 from services.services import add_booking
+from models.models import BookingRequest
+
 router = APIRouter()
-
-class BookingRequest(BaseModel):
-    car_id: int
-    date: str
-
-    @validator("date")
-    def validate_date(cls, date: str) -> str:
-        DATE_REGEX = r"^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$"
-        if not re.match(DATE_REGEX, date):
-            logging.error(f"Invalid date format: {date}. Expected format: YYYY-MM-DD.")
-            raise HTTPException(status_code=400, detail=f"Invalid date format: {date}. Expected format: YYYY-MM-DD.")
-        return date
 
 @router.post("/booking")
 def create_booking(booking: BookingRequest):
