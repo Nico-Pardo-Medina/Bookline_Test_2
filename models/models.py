@@ -1,7 +1,7 @@
 import logging
 import re
 from fastapi import HTTPException
-from pydantic import BaseModel,validator,conint
+from pydantic import BaseModel,validator
 
 class DateQuery(BaseModel):
     date: str
@@ -13,6 +13,13 @@ class DateQuery(BaseModel):
 class BookingRequest(BaseModel):
     car_id: int
     date: str
+
+    @validator("car_id")
+    def validate_car_id(cls, car_id: int) -> int:
+        if car_id < 1:
+            logging.error(f"Invalid id format: {car_id}. Car ID must be a positive integer greater than 0.")
+            raise HTTPException(status_code=400, detail="Car ID must be a positive integer greater than 0.")
+        return car_id
 
     @validator("date")
     def validate_date(cls, date: str) -> str:
