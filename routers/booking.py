@@ -14,4 +14,4 @@ def create_booking(booking: BookingRequest):
         return {"status": "success", "message": "Booking created successfully"}
     except Exception as e:
         logging.error(f"Failed to book car ID {booking.car_id} on {booking.date}: {e}")
-        raise HTTPException(status_code=500, detail="Failed to create booking")
+        raise HTTPException(status_code=500, detail=f"{e}")
