@@ -44,14 +44,14 @@ def test_create_booking_success():
 
 def test_create_booking_car_does_not_exist():
     response = client.post("/booking", json={"car_id": 999, "date": "2024-12-25"})
-    assert response.status_code == 500
+    assert response.status_code == 400
     assert response.json() == {
         "detail": "Car ID 999 not found."
     }
 
 def test_create_booking_car_already_booked():
     response = client.post("/booking", json={"car_id": 2, "date": "2024-12-24"})
-    assert response.status_code == 500
+    assert response.status_code == 400
     assert response.json() == {
         "detail": "Car ID 2 is already booked on 2024-12-24."
     }
